@@ -1,0 +1,76 @@
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #CDE8E5;
+}
+
+h1, h2 {
+    text-align: center;
+}
+
+.contenido {
+    margin-top: 40px;
+    width: 80%;
+    background-color: #7AB2B2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15px;
+}
+.container {
+    width: 50%;
+}
+.row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.formularioTareas label {
+    font-size: 1.7rem;
+}
+
+.textArea {
+    background-color: #EEF7FF;
+    width: 100%;
+}
+
+.inputButton {
+    background-color: #4D869C;
+    width: 50%;
+    height: 40px;
+    border-radius: 15px;
+    color: white;
+}
+
+.misTareas {
+        font-size: 1.3rem;
+}
+.tareas {
+    padding: 10px;
+    font-size: 1.4rem;
+}
+
+.borrar-tarea,
+.borrar-tarea:hover {
+    float: right;
+    cursor: pointer;
+    color: red;
+    font-weight: bold;
+}
+
+.error {
+    background-color: red;
+    text-align: center;
+    padding: 10px;
+    text-transform: uppercase;
+    font-weight: bold;
+    max-width: 400px;
+    margin: 0 auto;
+    color: white;
+}

@@ -1,61 +1,118 @@
-// Constructor para los elementos del menú
-function Platillo(nombre, precio) {
-    this.nombre = nombre;
-    this.precio = precio;
+// Variables
+const formulario = document.querySelector('#formulario');
+const listaTareas = document.querySelector('#lista-tareas');
+let tweets = [];
+
+// EvemtListeners
+eventListeners();
+
+function eventListeners() {
+    formulario.addEventListener('submit', agregarTarea);
+
+    document.addEventListener('DOMContentLoaded', () => {
+        tareas = JSON.parse( localStorage.getItem('tareas')) || [];
+
+        console.log(tareas)
+
+        crearHTML()
+    })
 }
 
-// Crear los elementos del menú
-let hamburguesa = new Platillo("Hamburguesa", 5);
-let papas = new Platillo("Papas", 3);
-let combo = new Platillo("Combo", 8);
 
-// Agregar los elementos del menú al array 'menu'
-let menu = [hamburguesa, papas, combo];
+// Funciones
 
-// Función para calcular el total del pedido
-function calcularTotal(pedido, cantidad) {
-    let total = pedido * cantidad;
-    console.log("El total es: $" + total);
-}
+function agregarTarea(e) {
+    e.preventDefault();
 
-// Array para almacenar las órdenes de los clientes
-let ordenes = [];
+    // Text Area Donde se escribe
+    const tarea = document.querySelector('#tarea').value;
 
-// Ciclo para permitir múltiples pedidos
-let continuar = true;
-while (continuar) {
-    const pedido = parseInt(prompt("Ingrese el número de lo que quiere: 1-hamburguesa, 2-papas, 3-combo"));
+    // Validacion
+    if(tarea === '') {
+        mostrarError('No puede ir vacio >:(')
 
-    switch (pedido) {
-        case 1:
-            let cantidadHamburguesa = parseInt(prompt("¿Cuántas hamburguesas quieres?"));
-            calcularTotal(hamburguesa.precio, cantidadHamburguesa);
-            ordenes.push({ producto: hamburguesa.nombre, cantidad: cantidadHamburguesa });
-            break;
-        case 2:
-            let cantidadPapas = parseInt(prompt("¿Cuántas papas quieres?"));
-            calcularTotal(papas.precio, cantidadPapas);
-            ordenes.push({ producto: papas.nombre, cantidad: cantidadPapas });
-            break;
-        case 3:
-            let cantidadCombo = parseInt(prompt("¿Cuántos combos quieres?"));
-            calcularTotal(combo.precio, cantidadCombo);
-            ordenes.push({ producto: combo.nombre, cantidad: cantidadCombo });
-            break;
-        default:
-            console.log("Opción no válida");
+        return;
     }
 
-    let respuesta = prompt("¿Desea hacer otro pedido? (Sí/No)").toLowerCase();
-    if (respuesta === "no") {
-        continuar = false;
+    const tareaObj = {
+        id: Date.now(),
+        tarea
+    }
+
+    // Añadir array de tweets
+    tareas = [...tareas, tareaObj];
+    console.log(tareas);
+    
+    // Agregar el html
+    crearHTML();
+    // Reiniciar el formulario
+    formulario.reset();
+}
+
+// Mostrar mwnsaje
+function mostrarError(eror) {
+    const mensajeError = document.createElement('p');
+    mensajeError.textContent = eror;
+    mensajeError.classList.add('error');
+
+    const contenido = document.querySelector('#contenido');
+    contenido.appendChild(mensajeError);
+
+    // Elimina la alerta despues de 5seg
+    setTimeout(() => {
+        mensajeError.remove()
+    }, 5000);
+}
+
+// Muestra un listado de los tweets
+
+function crearHTML(){ 
+
+    LimpiarHTML();
+
+    if( tareas.length > 0) {
+        tareas.forEach( tarea => {
+            // Crear un boton
+            const btnEliminar = document.createElement('a');
+            btnEliminar.classList.add('borrar-tarea');
+            btnEliminar.innerText = 'X';
+
+            // Eliminar del Dom
+            btnEliminar.onclick = () => {
+                borrarTarea(tarea.id);
+            }
+
+            // Crear el HTML
+            const li = document.createElement('li');
+            
+            // Añadir el texto
+            li.innerText = tarea.tarea;
+
+            // Asignar el boton
+            li.appendChild(btnEliminar)
+
+            // Insertar en el html
+            listaTareas.appendChild(li);
+        })
+    }
+
+    sincronizarStorage();
+}
+
+// Agrega los tareas actuales a localstroage
+function sincronizarStorage() {
+    localStorage.setItem('tareas', JSON.stringify(tareas))
+}
+
+// Limpiar el html
+function LimpiarHTML() {
+    while( listaTareas.firstChild){
+        listaTareas.removeChild(listaTareas.firstChild);
     }
 }
 
-// Mostrar las órdenes de los clientes
-console.log("Órdenes de los clientes:");
-ordenes.forEach((orden, index) => {
-    console.log(`Orden ${index + 1}: ${orden.cantidad} ${orden.producto}`);
-});
+function borrarTarea(id) {
+    tareas = tareas.filter( tarea => tarea.id !== id);
 
-console.log("¡Gracias por su visita!");
+    crearHTML();
+}
